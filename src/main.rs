@@ -104,7 +104,7 @@ fn main() {
     // Read full lines from stdin
     println!("You can now chat with other people! Type your message and press enter.");
     let stdin = tokio_stdin_stdout::stdin(0);
-    let mut framed_stdin = FramedRead::new(stdin, LinesCodec::new());
+    let mut framed_stdin = FramedRead::new(stdin, LinesCodec::new()).fuse();
 
     // Kick it off
     tokio::run(futures::future::poll_fn(move || -> Result<_, ()> {
@@ -114,7 +114,7 @@ fn main() {
                     let to_send = format!("{}> {}", nickname, line);
                     swarm.floodsub.publish(&floodsub_topic, to_send.as_bytes())
                 },
-                Async::Ready(None) => panic!("Stdin closed"),
+                Async::Ready(None) => break, // Stdin closed
                 Async::NotReady => break,
             };
         }
