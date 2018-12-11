@@ -24,8 +24,10 @@ use libp2p::{
     core::upgrade::{self, OutboundUpgradeExt},
     secio,
     mplex,
+    multiaddr,
     tokio_codec::{FramedRead, LinesCodec}
 };
+use std::env;
 use std::io::{self, Write};
 
 fn main() {
@@ -90,8 +92,14 @@ fn main() {
         libp2p::Swarm::new(transport, behaviour, libp2p::core::topology::MemoryTopology::empty(), local_pub_key)
     };
 
-    // Listen on all interfaces and whatever port the OS assigns
-    libp2p::Swarm::listen_on(&mut swarm, "/ip4/0.0.0.0/tcp/0".parse().unwrap()).unwrap();
+    // Listen on all interfaces.
+    let port = if let Some(port) = env::args().nth(1) {
+        port.parse().expect("Failed to parse port number")
+    } else {
+        0u16
+    };
+
+    libp2p::Swarm::listen_on(&mut swarm, multiaddr![Ip4([0, 0, 0, 0]), Tcp(port)]).unwrap();
 
     // Read full lines from stdin
     println!("You can now chat with other people! Type your message and press enter.");
