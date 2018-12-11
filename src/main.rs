@@ -94,6 +94,7 @@ fn main() {
     libp2p::Swarm::listen_on(&mut swarm, "/ip4/0.0.0.0/tcp/0".parse().unwrap()).unwrap();
 
     // Read full lines from stdin
+    println!("You can now chat with other people! Type your message and press enter.");
     let stdin = tokio_stdin_stdout::stdin(0);
     let mut framed_stdin = FramedRead::new(stdin, LinesCodec::new());
 
