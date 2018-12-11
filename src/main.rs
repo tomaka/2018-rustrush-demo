@@ -92,6 +92,9 @@ fn main() {
         libp2p::Swarm::new(transport, behaviour, libp2p::core::topology::MemoryTopology::empty(), local_pub_key)
     };
 
+    // We dial a bootstrap node for the nodes outside of the reach of mDNS.
+    libp2p::Swarm::dial_addr(&mut swarm, "/ip4/167.99.42.153/tcp/10333".parse().unwrap()).unwrap();
+
     // Listen on all interfaces.
     let port = if let Some(port) = env::args().nth(1) {
         port.parse().expect("Failed to parse port number")
