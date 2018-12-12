@@ -7,5 +7,5 @@ COPY . /usr/code
 
 RUN cargo build --release
 
-EXPOSE 30333
-CMD ["/usr/code/target/release/rustrush-demo", "30333"]
+EXPOSE 10333
+CMD ["/usr/code/target/release/rustrush-demo", "10333"]
